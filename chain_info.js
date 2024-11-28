@@ -31,19 +31,19 @@ async function trackBalanceTrend(io_node_url, io_vlt_addr, io_duration, io_block
 	var upper_range = max_history_days;
 	var multiplier = 1;
 	switch (io_duration) {
-	case 'day':
+	case 'daily':
 		upper_range = 6;
 		multiplier = 1;
 		break;
-	case 'week':
+	case 'weekly':
 		upper_range = Math.floor(max_history_days / 7) - 1;					//7 days in a week, subtracting genesis week from total weeks since genesis for calc
 		multiplier = 7;										//7 days in a week
 		break;
-	case 'month':
+	case 'monthly':
 		upper_range = Math.floor(max_history_days / 30);	//assuming 30 day in a month
 		multiplier = 7 * Math.floor(30 / 7); 					//week in a month ~ 4
 		break;
-	case 'year':
+	case 'yearly':
 		upper_range = Math.floor(max_history_days / 365);  //365 days of a year
 		multiplier = 7 * 52;								//52 weeks in a year
 		break;
