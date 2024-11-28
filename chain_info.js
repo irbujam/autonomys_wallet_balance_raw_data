@@ -8,20 +8,20 @@ const originalStdoutWrite = process.stdout.write;
 process.stderr.write = function() {};  // Suppresses all stderr (error/warnings)
 
 async function trackBalanceTrend(io_node_url, io_vlt_addr, io_duration, io_block_speed) {
-    const wsProvider = new WsProvider(io_node_url); // WebSocket connection to the Polkadot network
-    const api = await ApiPromise.create({ provider: wsProvider });
+	const wsProvider = new WsProvider(io_node_url); // WebSocket connection to the Polkadot network
+	const api = await ApiPromise.create({ provider: wsProvider });
 
-    // Get the current block hash
-    const currentBlockHash = await api.rpc.chain.getBlockHash();  // Get the current block hash
-    const currentBlockHeader = await api.rpc.chain.getHeader(currentBlockHash);  // Get the block header
-    const currentBlockNumber = currentBlockHeader.number.toNumber();  // Get the block number
-    //console.log(`Current Block: ${currentBlockNumber}`);
+	// Get the current block hash
+	const currentBlockHash = await api.rpc.chain.getBlockHash();  // Get the current block hash
+	const currentBlockHeader = await api.rpc.chain.getHeader(currentBlockHash);  // Get the block header
+	const currentBlockNumber = currentBlockHeader.number.toNumber();  // Get the block number
+	//console.log(`Current Block: ${currentBlockNumber}`);
 
-    // Query the balance of the account at the current block
-    const { data: { free: currentBalance } } = await api.query.system.account(io_vlt_addr);
-    //console.log(`Current Balance: ${currentBalance.toString()}`);
+	// Query the balance of the account at the current block
+	const { data: { free: currentBalance } } = await api.query.system.account(io_vlt_addr);
+	//console.log(`Current Balance: ${currentBalance.toString()}`);
 
-    // Query balances oevr a period
+	// Query balances oevr a period
 	//const block_speed = Math.floor(6.5);												//seconds per block, moved to read from config file
 	const block_speed = Math.floor(Number(io_block_speed));								//seconds per block, from config file
 	var blocks_per_day = Math.floor((60 / block_speed) * 60 * 24); 						// [1 block in 6s = (60/6)*60*24 per day] ~ 14440
@@ -55,23 +55,23 @@ async function trackBalanceTrend(io_node_url, io_vlt_addr, io_duration, io_block
 	//
 	var b_at_least_one_block_found = false;
 	var resp_json = '{"Response":';
-    for (let i = 0; i <= upper_range; i++) {
+	for (let i = 0; i <= upper_range; i++) {
 		const previousBlockHash = await api.rpc.chain.getBlockHash(currentBlockNumber - (i * blocks_per_day * multiplier));
+
+		// Use the .at() method on the API instance to query at the specific block hash
+		const apiAt = await api.at(previousBlockHash);  // Get API instance for a specific block hash
+
+		// Query balance at the specific block
+		const { data: { free: pastBalance } } = await apiAt.query.system.account(io_vlt_addr);
+
+		// Query the timestamp for the specific block
+		const blockTimestamp = await apiAt.query.timestamp.now(); // Retrieves the block timestamp (milliseconds)
         
-        // Use the .at() method on the API instance to query at the specific block hash
-        const apiAt = await api.at(previousBlockHash);  // Get API instance for a specific block hash
+		// Convert timestamp to Date
+		const timestampDate = new Date(blockTimestamp.toNumber());
 
-        // Query balance at the specific block
-        const { data: { free: pastBalance } } = await apiAt.query.system.account(io_vlt_addr);
-
-        // Query the timestamp for the specific block
-        const blockTimestamp = await apiAt.query.timestamp.now(); // Retrieves the block timestamp (milliseconds)
-        
-        // Convert timestamp to Date
-        const timestampDate = new Date(blockTimestamp.toNumber());
-
-        const previousBlockHeader = await api.rpc.chain.getHeader(previousBlockHash);
-        const previousBlockNumber = previousBlockHeader.number.toNumber();  // Get previous block number
+		const previousBlockHeader = await api.rpc.chain.getHeader(previousBlockHash);
+		const previousBlockNumber = previousBlockHeader.number.toNumber();  // Get previous block number
         
 		if (i==0) {
 			resp_json += '[{"Block":' + '"' + previousBlockNumber + '","Balance":"' + pastBalance.toString() + '","Timestamp":"' + timestampDate + '"}';
@@ -79,19 +79,19 @@ async function trackBalanceTrend(io_node_url, io_vlt_addr, io_duration, io_block
 		else {
 			resp_json += ',{"Block":' + '"' + previousBlockNumber + '","Balance":"' + pastBalance.toString() + '","Timestamp":"' + timestampDate + '"}';
 		};
-        b_at_least_one_block_found = true
-        // Output the balance and timestamp for the specific block
-        //process.stdout.write(`Block ${previousBlockNumber} - Balance: ${pastBalance.toString()} | Timestamp: ${timestampDate}`);
-    }
+		b_at_least_one_block_found = true
+		// Output the balance and timestamp for the specific block
+		//process.stdout.write(`Block ${previousBlockNumber} - Balance: ${pastBalance.toString()} | Timestamp: ${timestampDate}`);
+	};
 	if (b_at_least_one_block_found == true) { resp_json += ']' } ;
-	resp_json += '}'
+	resp_json += '}';
 	
 	// Restore stdout to display the balance
 	process.stdout.write = originalStdoutWrite;
     
 	process.stdout.write(resp_json);
 
-    await api.disconnect();
+	await api.disconnect();
 }
 
 const nodeUrl = process.argv[2];
