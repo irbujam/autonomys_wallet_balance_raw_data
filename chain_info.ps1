@@ -8,6 +8,7 @@ $script:_duration = "all"
 $script:_vlt_address = ""
 $script:_node_url = ""
 $script:_block_speed = 0
+$script:_out_filename = "balance_info.json"
 
 	Clear-Host
 	fReloadConfig
@@ -29,8 +30,9 @@ $script:_block_speed = 0
 		catch {}
 	}
 	#
-	$_c_info | Out-File ./autonomys-balance-raw-data.json
-	Write-Host "Finished...Data written to file 'Autonomys-balance-raw-data.json' in current folder."
+	$_send_to_output = "./" + $script:_out_filename
+	$_c_info | Out-File $_send_to_output
+	Write-Host ("Finished processing. Please see '" + $script:_out_filename + "' for balance information.")
 	
 	# ps objects from json - SAVED for later use
 	<#
@@ -60,6 +62,7 @@ function fReloadConfig() {
 			elseif ($_ip_type.toLower().IndexOf("wallet-address") -ge 0) { $script:_vlt_address = $_config[1].toString() }
 			elseif ($_ip_type.toLower().IndexOf("block-speed") -ge 0) { $script:_block_speed = $_config[1].toString() }
 			elseif ($_ip_type.toLower().IndexOf("rpc-node-url") -ge 0) { $script:_node_url = $_config[1].toString() }
+			elseif ($_ip_type.toLower().IndexOf("write-to-filename") -ge 0) { $script:_out_filename = $_config[1].toString() }
 		}
 	}
 }
