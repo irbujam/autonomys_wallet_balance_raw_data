@@ -1,0 +1,32 @@
+#### start of config file
+#### sample config below contains user defined environment values
+#### '#' in front of the line indicates a comment line and is just there for readability and can be deleted
+#### please stick to using below format
+#
+#-------------------------------------------------------------------------------------------------------------------------
+# <<< NEW >>> Wallet balance display using address provided. This is an optional feature.
+#
+# duration-to-pull values:
+#  - daily   (past 7 days)
+#  - weekly  (per week since genesis)
+#  - monthly (per month since genesis)
+#  - yearly  (per year since genesis)
+#  - all     (same as daily but pulls data since genesis. Somewhat slow compared to other options. Also this is default set)
+#
+# rpc-node-url value: 
+# change this to available values from Autonomys docs to pull data for testnet/mainnet etc. Default set to mainnet
+#-------------------------------------------------------------------------------------------------------------------------
+
+duration-to-pull          = daily
+wallet-address            = <your wallet address>
+rpc-node-url              = wss://rpc.mainnet.subspace.foundation/ws
+
+#-------------------------------------------------------------------------------------------------------------------------
+# current chain block production rate for single block
+#-------------------------------------------------------------------------------------------------------------------------
+
+block-speed (seconds)     = 6.5
+
+#-------------------------------------------------------------------------------------------------------------------------
+#
+#### end of config file
