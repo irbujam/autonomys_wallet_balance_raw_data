@@ -4,7 +4,7 @@
 #### please stick to using below format
 #
 #-------------------------------------------------------------------------------------------------------------------------
-# <<< NEW >>> Wallet balance display using address provided. This is an optional feature.
+# Wallet balance raw data extraction
 #
 # duration-to-pull values:
 #  - daily   (past 7 days)
