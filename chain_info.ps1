@@ -1,24 +1,16 @@
 <#  ------------------------------------------------------------------------------------------------
-	Script location on Github: https://github.com/irbujam/ss_log_event_monitor
+	Script location on Github: https://github.com/irbujam/autonomys_wallet_balance_raw_data
 	--------------------------------------------------------------------------------------------- #>
 
-##header
 
 function  fMain() {
-$script:_duration = "all"	#default
+$script:_duration = "all"
 $script:_vlt_address = ""
-#$script:_node_url = "wss://rpc.mainnet.subspace.foundation/ws"
 $script:_node_url = ""
 $script:_block_speed = 0
 
 	Clear-Host
 	fReloadConfig
-	####
-	#$script:_duration = "day"
-	#$script:_duration = "week"
-	#$script:_duration = "month"
-	#$script:_duration = "year"
-	#$script:_duration = 'all'
 	####
 	$_c_info = ""
 	if ($script:_block_speed -ne 0 -and $script:_vlt_address.Length -gt 0 -and $script:_vlt_address -ne $null) {
@@ -37,7 +29,6 @@ $script:_block_speed = 0
 		catch {}
 	}
 	#
-	#Write-Host $_c_info
 	$_c_info | Out-File ./autonomys-balance-raw-data.json
 	Write-Host "Finished...Data written to file 'Autonomys-balance-raw-data.json' in current folder."
 	
