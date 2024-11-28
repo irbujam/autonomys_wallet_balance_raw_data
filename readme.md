@@ -1,4 +1,4 @@
-How to use:
+**How to use:**
 - save all files from latest release in a folder on local computer
 - copy contents of sample-balance-config.txt to a new file and save it in the same folder. Name the new file as balance-config.txt
 - adjust balance-config.txt to match your wallet address. Adjust other parameters as necessary if not using preset defaults.
