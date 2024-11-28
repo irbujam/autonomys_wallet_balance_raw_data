@@ -21,7 +21,7 @@ async function trackBalanceTrend(io_node_url, io_vlt_addr, io_duration, io_block
 	const { data: { free: currentBalance } } = await api.query.system.account(io_vlt_addr);
 	//console.log(`Current Balance: ${currentBalance.toString()}`);
 
-	// Query balances oevr a period
+	// Query balances over a period
 	//const block_speed = Math.floor(6.5);												//seconds per block, moved to read from config file
 	const block_speed = Math.floor(Number(io_block_speed));								//seconds per block, from config file
 	var blocks_per_day = Math.floor((60 / block_speed) * 60 * 24); 						// [1 block in 6s = (60/6)*60*24 per day] ~ 14440
